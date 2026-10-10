@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, ArrowUp, MessageSquare, Sparkles } from 'lucide-react';
 import { CHAT_ENABLED, sendChat } from '../services/api';
+import { speakHeatSense } from '../services/speech';
 import { useLanguage } from '../i18n';
 
 const questions = ['Why is the risk high?', 'What is the current HeatSense status?', 'Explain how HeatSense works.', 'Why do you use Arduino UNO Q?', 'What does the Worker persona mean?'];
@@ -31,7 +32,9 @@ export default function AIChat({ connected, aiMode }) {
 
     try {
       const result = await sendChat(message, controller.current.signal);
-      setMessages(m => [...m, { role: 'assistant', text: result.response }]);
+      const assistantText = result.response;
+      setMessages(m => [...m, { role: 'assistant', text: assistantText }]);
+      speakHeatSense(assistantText);
       setMode(result.mode || null);
       setProvider(result.provider || null);
     } catch (err) {

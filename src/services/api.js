@@ -1,10 +1,9 @@
 import { normalizeStatus } from './status';
 
-export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/+$/, '');
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '');
 export const CHAT_ENABLED = import.meta.env.VITE_CHAT_ENABLED === 'true';
-// Vite forwards development requests to the configured backend origin. This
-// supports existing firmware backends without requiring a CORS configuration.
-const REQUEST_BASE_URL = import.meta.env.DEV ? '/device-api' : API_BASE_URL;
+// During Vite dev, relative /api requests are proxied to the FastAPI backend.
+const REQUEST_BASE_URL = import.meta.env.DEV ? '' : API_BASE_URL;
 
 async function request(path, options = {}) {
   const controller = new AbortController();
@@ -13,7 +12,8 @@ async function request(path, options = {}) {
   options.signal?.addEventListener('abort', abort, { once: true });
   const timer = setTimeout(abort, 30000);
   try {
-    const response = await fetch(`${REQUEST_BASE_URL}${path}`, { ...options, signal: controller.signal, headers: { Accept: 'application/json', ...options.headers } });
+    const url = `${REQUEST_BASE_URL}${path}`;
+    const response = await fetch(url, { ...options, signal: controller.signal, headers: { Accept: 'application/json', ...options.headers } });
     if (!response.ok) throw new Error(`Backend returned HTTP ${response.status}.`);
     return await response.json();
   } finally {
