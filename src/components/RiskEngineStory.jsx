@@ -1,0 +1,2 @@
+import DemoConsole from './DemoConsole';
+export default function RiskEngineStory(){return <section id="risk-engine" className="risk-engine-story section-wrap"><div className="section-intro"><div><span className="eyebrow">EXPERIMENT WITH THE IDEA</span><h2>One room.<br/>More than one perspective.</h2></div><p>Move a slider. Change the persona.<br/>See how inputs influence the teaching model.<br/>The physical device stays untouched.</p></div><DemoConsole compact/></section>;}

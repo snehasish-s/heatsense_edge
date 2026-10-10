@@ -1,0 +1,10 @@
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+const words=['SENSE.','UNDERSTAND.','DECIDE.','ACT.','HEATSENSE EDGE'];
+export function shouldPlayIntro(){try{return !window.matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('heatsense-intro-seen')&&!window.location.hash;}catch{return false;}}
+export default function CinematicIntro({onDone}) {
+  const [step,setStep]=useState(0);const dialog=useRef(null);const finish=useRef(onDone);
+  useEffect(()=>{dialog.current.showModal();const previous=document.body.style.overflow;document.body.style.overflow='hidden';const timers=[1800,3600,5400,7200].map((ms,i)=>setTimeout(()=>setStep(i+1),ms));timers.push(setTimeout(()=>finish.current(),10500));return()=>{timers.forEach(clearTimeout);document.body.style.overflow=previous;dialog.current?.close();try{sessionStorage.setItem('heatsense-intro-seen','1');}catch{}};},[]);
+  return <dialog ref={dialog} className="cinematic-intro" aria-label="HeatSense introduction" onCancel={e=>{e.preventDefault();onDone();}}><div className="boot-circuit" aria-hidden="true"><i/><i/><i/><span/></div><div className="boot-top"><span>BITBYBIT / BH26PS02T015</span><button autoFocus onClick={onDone}>Skip intro <ArrowRight size={14}/></button></div><div className="boot-sequence"><div className="boot-signal"><span/></div><AnimatePresence mode="wait"><motion.h1 key={step} initial={{opacity:0,y:15,filter:'blur(6px)'}} animate={{opacity:1,y:0,filter:'blur(0px)'}} exit={{opacity:0,y:-15}} transition={{duration:.5}}>{words[step]}</motion.h1></AnimatePresence><p>{step===4?'Cooler rooms. Safer people. Smarter cities.':'FROM THE ROOM. TO THE PERSON INSIDE IT.'}</p></div><div className="boot-bottom"><span>LOCAL INTELLIGENCE / HUMAN IMPACT</span><div>{words.slice(0,4).map((word,i)=><span key={word} className={step>=i?'active':''}>{word}<i/></span>)}</div><span>BPUT HACKATHON 2026</span></div></dialog>;
+}

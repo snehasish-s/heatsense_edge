@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Activity, ArrowDown, ArrowRight, ArrowUpRight, BellRing, BrainCircuit, Check, Cpu, Fan, Lightbulb, Monitor, Radio, ShieldCheck, Sparkles, Thermometer, UserRound, Waves, WifiOff } from 'lucide-react';
-import Board from './Board';
+import InteractiveUnoQ from './InteractiveUnoQ';
 
 gsap.registerPlugin(ScrollTrigger);
 const stages = [
@@ -46,7 +46,7 @@ export default function UnoQExperience({ connected }) {
     <section id="experience" className="experience section-wrap">
       <div className="section-intro"><div><div className="eyebrow">THE SYSTEM, UNFOLDED</div><h2>From a signal.<br/>To something meaningful.</h2></div><p>Follow the journey from the room<br/>to the person inside it.</p></div>
       <div className="story-body" ref={root}>
-        <div className="story-canvas"><div className="canvas-label"><span>ARDUINO UNO Q</span><span>0{stage+1} / 07</span></div><div className="story-orbit"/><div className="story-board"><Board active={stage<5?'mcu':'linux'}/></div><AnimatePresence mode="wait"><motion.div className="stage-visual" key={stage} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-5}} transition={{duration:.3}}><StageVisual stage={stage}/></motion.div></AnimatePresence><div className="story-progress">{stages.map((s,i)=><a key={s.tag} href={`#stage-${i}`} aria-label={`Stage ${i+1}: ${s.tag}`} className={i===stage?'active':''}/>)}</div></div>
+        <div className="story-canvas"><div className="canvas-label"><span>ARDUINO UNO Q</span><span>0{stage+1} / 07</span></div><div className="story-orbit"/><div className="story-board"><InteractiveUnoQ active={stage<5?'mcu':'linux'} xray={stage>=1&&stage<=4}/></div><AnimatePresence mode="wait"><motion.div className="stage-visual" key={stage} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-5}} transition={{duration:.3}}><StageVisual stage={stage}/></motion.div></AnimatePresence><div className="story-progress">{stages.map((s,i)=><a key={s.tag} href={`#stage-${i}`} aria-label={`Stage ${i+1}: ${s.tag}`} className={i===stage?'active':''}/>)}</div></div>
         <div className="story-copy">{stages.map(({tag,title,text,detail,status,icon:Icon},i)=><article id={`stage-${i}`} data-stage={i} key={tag} className={`story-stage ${stage===i?'current':''}`}><span className="stage-number">0{i+1}<span> / 07</span></span><div className="eyebrow"><Icon size={14}/>{tag}</div><h3>{title}</h3><p>{text}</p><div className="stage-detail">{detail}</div><span className={`status-label ${status==='Prototype'?'mint':''}`}><span className="tiny-dot"/>{status}</span><div className="mobile-stage-visual"><StageVisual stage={i}/></div></article>)}</div>
       </div>
     </section>

@@ -36,8 +36,8 @@ const translations = {
 };
 const LanguageContext = createContext(null);
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState(() => { try { return ['en', 'hi', 'od'].includes(localStorage.getItem('heatsense-language')) ? localStorage.getItem('heatsense-language') : 'en'; } catch { return 'en'; } });
-  useEffect(() => { document.documentElement.lang = language === 'od' ? 'or' : language; try { localStorage.setItem('heatsense-language', language); } catch { /* Storage may be disabled. */ } }, [language]);
+  const [language, setLanguage] = useState(() => { try { return ['en', 'hi', 'od'].includes(sessionStorage.getItem('heatsense-language')) ? sessionStorage.getItem('heatsense-language') : 'en'; } catch { return 'en'; } });
+  useEffect(() => { document.documentElement.lang = language === 'od' ? 'or' : language; try { sessionStorage.setItem('heatsense-language', language); } catch { /* Storage may be disabled. */ } }, [language]);
   return <LanguageContext.Provider value={{ language, setLanguage, t: text => translations[language][text] || text }}>{children}</LanguageContext.Provider>;
 }
 export const useLanguage = () => useContext(LanguageContext);
